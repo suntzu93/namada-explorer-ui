@@ -12,7 +12,7 @@ export const API_URL_GET_TRANSACTION_DETAIL =
 export const API_URL_GET_VALIDATORS = API_URL + "validators/list";
 export const API_URL_GET_VALIDATOR_DETAIL = API_URL + "validators/validator/";
 
-export const RPC_URL = "https://namada-rpc.rpc-node.xyz";
+export const RPC_URL = "https://rpc-namada.theamsolutions.info";
 export const RPC_STATUS = RPC_URL + "/status";
 export const RPC_VALIDATOR = RPC_URL + "/validators"
 export const DECIMAL_NAAN = 1000000;
