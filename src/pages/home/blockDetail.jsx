@@ -293,7 +293,7 @@ const BlockDetailPage = () => {
                 <Link
                   target="_blank"
                   underline="hover"
-                  href={Utils.getEtherAddressLink() + block}
+                  href={Utils.getDomain() +"/search?block="+ block}
                   className={styles.link}
                 >
                   {block}
