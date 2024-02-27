@@ -16,14 +16,8 @@ export const RPC_URL = "https://rpc-namada.theamsolutions.info";
 export const RPC_STATUS = RPC_URL + "/status";
 export const RPC_VALIDATOR = RPC_URL + "/validators"
 export const DECIMAL_NAAN = 1000000;
-export const SATOSHI_BITCOIN = 100000000;
-export const NETWORK_MAINNET = "mainnet";
-export const DEFAULT_NETWORK = NETWORK_MAINNET;
+
+export const API_PROPOSAL = "https://it.api.namada.red/api/v1/chain/governance/proposals"
 
 export const TIME_RELOAD = 15000;
-
-
-export const TIME_LOCK_DEAUTHORIZATION = 45 * 24 * 60 * 60; //45 days
-
-export const GROUP_LIFE_TIME = 259200; //~30days
 export default API_URL;

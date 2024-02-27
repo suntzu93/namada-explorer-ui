@@ -118,3 +118,15 @@
 .numbers{
   font-family: Helvetica Neue;
 }
+
+.vote_pending {
+  color: #1451DB;
+}
+
+.vote_passed {
+  color: green;
+}
+
+.vote_reject {
+  color: gray;
+}

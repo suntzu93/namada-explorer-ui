@@ -75,6 +75,50 @@ export const validator_columns = [
   }
 ];
 
+
+export const proposal_columns = [
+  {
+    header: "Id",
+    accessor: "id",
+    numeric: true,
+  },
+  {
+    header: "Kind",
+    accessor: "kind",
+    numeric: false,
+  },
+  {
+    header: "Author",
+    accessor: "author",
+    numeric: false,
+  },
+  {
+    header: "Epoch",
+    accessor: "start_epoch",
+    numeric: false,
+  },
+  {
+    header: "Yes",
+    accessor: "yay_votes",
+    numeric: false,
+  },
+  {
+    header: "No",
+    accessor: "nay_votes",
+    numeric: false,
+  },
+  {
+    header: "Abstain",
+    accessor: "abstain_votes",
+    numeric: false,
+  },
+  {
+    header: "Status",
+    accessor: "result",
+    numeric: false,
+  }
+];
+
 const COUNT_FORMATS = [
   {
     // 0 - 999
@@ -428,6 +472,27 @@ export const getValidatorDetail = async (address) => {
     return data;
   } catch (e) {
     console.log("error to fetch transaction data " + e);
+  }
+  return emptyData;
+};
+
+
+export const getProposals = async () => {
+  const emptyData = JSON.parse(`[]`);
+  try {
+    let data;
+    data = await fetchWithTimeout(
+        Const.API_PROPOSAL,
+        {
+          method: "GET",
+          timeout: 10000,
+        },
+        ""
+    );
+    data = await data.json();
+    return data?.proposals;
+  } catch (e) {
+    console.log("error to fetch proposals " + e);
   }
   return emptyData;
 };

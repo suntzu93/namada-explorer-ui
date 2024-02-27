@@ -20,6 +20,7 @@ import TransactionDetailPage from "./transactionDetail";
 import TransactionsPage from "./transaction";
 import { isNumeric } from "../../utils/utils";
 import * as Utils from "../../utils/utils";
+import ProposalsPage from "./proposal";
 
 const HomePage = () => {
   const [tab, setTab] = React.useState("1");
@@ -45,6 +46,8 @@ const HomePage = () => {
         setTab("transactions");
       } else if (pathName.startsWith("/validators")) {
         setTab("validators");
+      } else if (pathName.startsWith("/governances")) {
+        setTab("governances");
       } else {
         setTab("blocks");
       }
@@ -62,11 +65,7 @@ const HomePage = () => {
   function transactions() {
     return (
       <div>
-        <TransactionsPage
-          network={Const.DEFAULT_NETWORK}
-          isSearch={isSearch}
-          searchInput={searchInput}
-        />
+        <TransactionsPage />
       </div>
     );
   }
@@ -74,9 +73,15 @@ const HomePage = () => {
   function validators() {
     return (
       <div>
-        <ValidatorPage
-          network={Const.DEFAULT_NETWORK}
-        />
+        <ValidatorPage />
+      </div>
+    );
+  }
+
+  function governances() {
+    return (
+      <div>
+        <ProposalsPage />
       </div>
     );
   }
@@ -103,6 +108,8 @@ const HomePage = () => {
           return browserHistory.push("/transactions");
         case "validators":
           return browserHistory.push("/validators");
+        case "governances":
+          return browserHistory.push("/governances");
         default:
           return browserHistory.push("/");
       }
@@ -123,10 +130,10 @@ const HomePage = () => {
         if (Utils.isNumeric(searchInput)) {
           // window.open(Utils.getDomain() + "?block=" + searchInput);
           url += "?block=" + searchInput;
-        }else if (searchInput.length > 60) {
+        } else if (searchInput.length > 60) {
           url += "?transaction=" + searchInput;
           // window.open(Utils.getDomain() + "?transaction=" + searchInput);
-        }else if (searchInput.length >= 40 && searchInput.length < 60){
+        } else if (searchInput.length >= 40 && searchInput.length < 60) {
           url += "?validator=" + searchInput;
           // window.open(Utils.getDomain() + "?validator=" + searchInput);
         }
@@ -182,6 +189,11 @@ const HomePage = () => {
                 label="Validator"
                 value="validators"
               />
+              <Tab
+                sx={{ padding: 0, width: "120px" }}
+                label="Governance"
+                value="governances"
+              />
             </TabList>
             <div style={{ flex: "1 1 0%" }}></div>
             <div className={styles.search}>
@@ -207,6 +219,7 @@ const HomePage = () => {
           <TabPanel value="blocks">{blocks()}</TabPanel>
           <TabPanel value="transactions">{transactions()}</TabPanel>
           <TabPanel value="validators">{validators()}</TabPanel>
+          <TabPanel value="governances">{governances()}</TabPanel>
           <TabPanel value="blockDetail">{blockDetail()}</TabPanel>
           <TabPanel value="transactionDetail">{transactionDetail()}</TabPanel>
           <TabPanel value="validatorDetail">{validatorDetail()}</TabPanel>

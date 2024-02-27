@@ -2,8 +2,6 @@ import React, { useMemo } from "react";
 import { useTable } from "react-table";
 import Loader from "../loader";
 import styles from "./styles.module.css";
-import { ReactComponent as Copy } from "../../assets/copy.svg";
-import Tooltip from "@mui/material/Tooltip";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -20,7 +18,7 @@ import { ReactComponent as ShareLink } from "../../assets/link.svg";
 import * as Data from "../../pages/data";
 import * as Utils from "../../utils/utils";
 
-export const ValidatorTable = ({ columns, data, isLoading }) => {
+export const ProposalTable = ({ columns, data, isLoading }) => {
   const columnData = useMemo(() => columns, [columns]);
   const rowData = useMemo(() => data, [data]);
 
@@ -28,12 +26,6 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
     columns: columnData,
     data: rowData,
   });
-
-  const copyToClipBoard = (data) => {
-    try {
-      navigator.clipboard.writeText(data);
-    } catch (err) {}
-  };
 
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -74,6 +66,7 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
     return (
       <TableHead>
         <TableRow>
+          <TableCell />
           {columns.map((headCell) => (
             <TableCell
               className={styles.th}
@@ -81,10 +74,9 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
               align={"left"}
               sortDirection={orderBy === headCell.accessor ? order : false}
             >
-              {headCell.accessor == "voting_power" ||
-              headCell.accessor == "voting_percentage" ? (
+              {headCell.accessor == "id" || headCell.accessor == "kind" ? (
                 <TableSortLabel
-                  direction={orderBy === headCell.accessor ? order : "desc"}
+                  direction={orderBy === headCell.accessor ? order : "asc"}
                   onClick={createSortHandler(headCell.accessor)}
                 >
                   {headCell.header}
@@ -107,7 +99,7 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
   };
 
   const [order, setOrder] = React.useState("desc");
-  const [orderBy, setOrderBy] = React.useState("voting_power");
+  const [orderBy, setOrderBy] = React.useState("id");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(100);
 
@@ -133,7 +125,36 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
   function Row(props) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
-
+    const voteYes =
+      row.yay_votes == 0
+        ? 0
+        : (
+            (parseFloat(row.yay_votes) /
+              (parseFloat(row.yay_votes) +
+                parseFloat(row.nay_votes) +
+                parseFloat(row.abstain_votes))) *
+            100
+          ).toFixed(2);
+    const voteNo =
+      row.nay_votes == 0
+        ? 0
+        : (
+            (parseFloat(row.nay_votes) /
+              (parseFloat(row.yay_votes) +
+                parseFloat(row.nay_votes) +
+                parseFloat(row.abstain_votes))) *
+            100
+          ).toFixed(2);
+    const voteAbs =
+      row.abstain_votes == 0
+        ? 0
+        : (
+            (parseFloat(row.abstain_votes) /
+              (parseFloat(row.yay_votes) +
+                parseFloat(row.nay_votes) +
+                parseFloat(row.abstain_votes))) *
+            100
+          ).toFixed(2);
     return (
       <React.Fragment>
         <TableRow
@@ -141,39 +162,29 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
           tabIndex={-1}
           key={row.name}
           className={open ? styles.rowSeleted : null}
+          onClick={() => setOpen(!open)}
         >
+          <TableCell className={styles.td_selected}></TableCell>
           <TableCell align="left">
-            <Link
-              target="_blank"
-              underline="hover"
-              href={Utils.getDomain() + "?validator=" + row.address}
-              className={styles.link}
-            >
-              {Data.formatString(row.address)}
-            </Link>
+            {row.id}
             <ShareLink />
-            <Tooltip title="Copied">
-              <Copy
-                style={{ cursor: "pointer" }}
-                onClick={(e) => copyToClipBoard(row.id)}
-              />
-            </Tooltip>
           </TableCell>
+          <TableCell align="left">{row.kind}</TableCell>
+          <TableCell align="left">{row.author.Account}</TableCell>
           <TableCell align="left">
-              {row.moniker}
+            {row.start_epoch + "/" + row.end_epoch + "/" + row.grace_epoch}
           </TableCell>
+          <TableCell align="left">{voteYes}</TableCell>
+          <TableCell align="left">{voteNo}</TableCell>
+          <TableCell align="left">{voteAbs}</TableCell>
           <TableCell align="left">
-            {Data.formatString(row.operator_address)}
-          </TableCell>
-          <TableCell align="left">
-            <span className={styles.numbers}>
-              {Data.formatWeiDecimalNoSurplus(row.voting_power)}
-            </span>
-          </TableCell>
-          <TableCell align="left">
-            <span className={styles.numbers}>
-              {Data.formatNumberToDecimal(row.voting_percentage)}
-            </span>
+            {row.result === "Pending" ? (
+              <span className={styles.vote_pending}>{row.result}</span>
+            ) : row.result === "Rejected" ? (
+              <span className={styles.vote_reject}>{row.result}</span>
+            ) : (
+              <span className={styles.vote_passed}>{row.result}</span>
+            )}
           </TableCell>
         </TableRow>
       </React.Fragment>
@@ -249,4 +260,4 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
   );
 };
 
-export default ValidatorTable;
+export default ProposalTable;
