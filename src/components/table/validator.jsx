@@ -155,7 +155,7 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
             <Tooltip title="Copied">
               <Copy
                 style={{ cursor: "pointer" }}
-                onClick={(e) => copyToClipBoard(row.id)}
+                onClick={(e) => copyToClipBoard(row.address)}
               />
             </Tooltip>
           </TableCell>
