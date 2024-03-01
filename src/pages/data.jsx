@@ -248,7 +248,7 @@ export const getBlockDetail = async (block) => {
         method: "GET",
         timeout: 10000,
       },
-      Const.AUTH
+      ""
     );
     data = await data.json();
     return data;
