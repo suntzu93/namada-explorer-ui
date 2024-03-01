@@ -83,10 +83,7 @@ export const BlockTable = ({ columns, data, isLoading }) => {
               align={"left"}
               sortDirection={orderBy === headCell.accessor ? order : false}
             >
-              {headCell.accessor == "updateTime" ||
-              headCell.accessor == "amount" ||
-              headCell.accessor == "actualAmountReceived" ||
-              headCell.accessor == "status" ? (
+              {headCell.accessor == "time" || headCell.accessor == "height" ? (
                 <TableSortLabel
                   direction={orderBy === headCell.accessor ? order : "desc"}
                   onClick={createSortHandler(headCell.accessor)}
@@ -111,7 +108,7 @@ export const BlockTable = ({ columns, data, isLoading }) => {
   };
 
   const [order, setOrder] = React.useState("desc");
-  const [orderBy, setOrderBy] = React.useState("updateTime");
+  const [orderBy, setOrderBy] = React.useState("time");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(100);
 
@@ -152,20 +149,26 @@ export const BlockTable = ({ columns, data, isLoading }) => {
             <Link
               target="_blank"
               underline="hover"
-              href={Utils.getDomain() + "?block=" + row.header_height}
+              href={Utils.getDomain() + "?block=" + row.height}
               className={styles.link}
             >
-              <span>{row.header_height}</span>
+              <span>{row.height}</span>
             </Link>
           </TableCell>
           <TableCell align="left">
-            <span>{row.block_id}</span>
+            <span>{row.hash}</span>
           </TableCell>
           <TableCell align="left">
-            <span>{row.transactions_count}</span>
+            <span>{row.transactions.length}</span>
           </TableCell>
           <TableCell align="left">
-            <span>{Data.formatTimeToText(Data.convertTimeStringToMilisecond(row.header_time))}</span>
+            <span>{Data.formatTimeToText(Data.convertTimeStringToMilisecond(row.time))}</span>
+          </TableCell>
+          <TableCell align="left">
+            <span>{row.moniker}</span>
+          </TableCell>
+          <TableCell align="left">
+            <span>{row.proposer}</span>
           </TableCell>
         </TableRow>
       </React.Fragment>

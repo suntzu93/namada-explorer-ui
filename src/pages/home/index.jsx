@@ -179,11 +179,11 @@ const HomePage = () => {
                 label="Block"
                 value="blocks"
               />
-              <Tab
-                sx={{ padding: 0, width: "120px" }}
-                label="Transaction"
-                value="transactions"
-              />
+              {/*<Tab*/}
+              {/*  sx={{ padding: 0, width: "120px" }}*/}
+              {/*  label="Transaction"*/}
+              {/*  value="transactions"*/}
+              {/*/>*/}
               <Tab
                 sx={{ padding: 0, width: "120px" }}
                 label="Validator"
@@ -217,7 +217,7 @@ const HomePage = () => {
             </div>
           </Box>
           <TabPanel value="blocks">{blocks()}</TabPanel>
-          <TabPanel value="transactions">{transactions()}</TabPanel>
+          {/*<TabPanel value="transactions">{transactions()}</TabPanel>*/}
           <TabPanel value="validators">{validators()}</TabPanel>
           <TabPanel value="governances">{governances()}</TabPanel>
           <TabPanel value="blockDetail">{blockDetail()}</TabPanel>

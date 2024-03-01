@@ -6,15 +6,12 @@ import Box from "@mui/material/Box";
 import Loader from "../../components/loader";
 import * as Const from "../../utils/Cons";
 
-function ValidatorDetail({ validatorDetail, validatorInfo }) {
-  console.log(validatorInfo);
-  console.log(validatorDetail);
-  return (
-    <Box sx={{ width: "100%" }}>{Overview(validatorDetail, validatorInfo)}</Box>
-  );
+function ValidatorDetail({ pageData }) {
+  console.log(pageData);
+  return <Box sx={{ width: "100%" }}>{Overview(pageData)}</Box>;
 }
 
-function Overview(blockDetail, validatorInfo) {
+function Overview(pageData) {
   return (
     <div className={styles.operator_detail_overview}>
       <div style={{ flex: "1 1 0%" }}>
@@ -27,34 +24,27 @@ function Overview(blockDetail, validatorInfo) {
             </tr>
           </tbody>
           <tbody className={styles.operator_detail_overview_table_tbody}>
-            {validatorInfo !== undefined ? (
+            {pageData !== undefined ? (
               <>
                 <tr>
                   <th>address</th>
-                  <td>{validatorInfo.address}</td>
+                  <td>{pageData.rowData.address_hex}</td>
                 </tr>
                 <tr>
                   <th>operator address</th>
-                  <td>{validatorInfo.operator_address}</td>
+                  <td>{pageData.rowData.address}</td>
                 </tr>
                 <tr>
                   <th>moniker</th>
-                  <td>{validatorInfo.moniker}</td>
+                  <td>{pageData.rowData.moniker}</td>
                 </tr>
                 <tr>
                   <th>voting power</th>
-                  <td>
-                    {Data.formatWeiDecimalNoSurplus(validatorInfo.voting_power)}
-                  </td>
+                  <td>{pageData.rowData.tokens}</td>
                 </tr>
                 <tr>
-                  <th>voting percentage</th>
-                  <td>
-                    {" "}
-                    {Data.formatNumberToDecimal(
-                      validatorInfo.voting_percentage
-                    )}
-                  </td>
+                  <th>status</th>
+                  <td>{pageData.rowData.status}</td>
                 </tr>
               </>
             ) : (
@@ -69,30 +59,6 @@ function Overview(blockDetail, validatorInfo) {
           </tbody>
         </table>
       </div>
-      <div style={{ flex: "1 1 0%" }}>
-        <h5>
-          <strong>Last 100 blocks</strong>
-        </h5>
-        <div className={styles.div_uptime_parent}>
-          <div className={styles.div_uptime}>
-            {blockDetail.uptime === undefined ||
-            blockDetail.uptime?.length === 0
-              ? "Cann't fetch the uptime of your validator"
-              : blockDetail.uptime.map((uptime) => {
-                  return (
-                    <div
-                      className={
-                        uptime.sign_status
-                          ? styles.div_uptime_item
-                          : styles.div_uptime_item_miss
-                      }
-                    >
-                    </div>
-                  );
-                })}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -103,7 +69,6 @@ const ValidatorDetailPage = () => {
     isLoading: true,
   });
   const [validatorAddress, setValidatorAddress] = useState();
-  const [validatorInfo, setValidatorInfo] = useState();
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -111,31 +76,17 @@ const ValidatorDetailPage = () => {
     setValidatorAddress(validator);
 
     Data.getValidators().then((info) => {
-      let filteredData = info.filter(
-        (item) => item.address.toUpperCase() === validator.toUpperCase()
-      );
-      if (filteredData.length > 0) {
-        setValidatorInfo(filteredData[0]);
+      for (let i = 0; i < info.length; i++) {
+        if (info[i].address_hex.toUpperCase() === validator.toUpperCase()) {
+          setPageData({
+            rowData: info[i],
+            isLoading: false,
+          });
+          break;
+        }
       }
     });
-
-    loadValidatorDetail(validator);
-    const intervalCall = setInterval(() => {
-      loadValidatorDetail(validator);
-    }, Const.TIME_RELOAD);
-    return () => {
-      clearInterval(intervalCall);
-    };
   }, []);
-
-  function loadValidatorDetail(validator) {
-    Data.getValidatorDetail(validator).then((info) => {
-      setPageData({
-        rowData: info,
-        isLoading: false,
-      });
-    });
-  }
 
   return (
     <>
@@ -151,10 +102,7 @@ const ValidatorDetailPage = () => {
               <span>Validator</span>
             </div>
           </div>
-          <ValidatorDetail
-            validatorDetail={pageData.rowData}
-            validatorInfo={validatorInfo}
-          />
+          <ValidatorDetail pageData={pageData} />
         </div>
       )}
     </>

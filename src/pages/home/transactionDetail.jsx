@@ -29,35 +29,8 @@ function Overview(blockDetail) {
         </tbody>
         <tbody className={styles.operator_detail_overview_table_tbody}>
           <tr>
-            <th>height</th>
-            <td>
-              <Link
-                target="_blank"
-                underline="hover"
-                href={
-                  Utils.getDomain() +
-                  "?block=" +
-                  blockDetail.rowData.header_height
-                }
-                className={styles.link}
-              >
-                {blockDetail.rowData.header_height}
-              </Link>
-            </td>
-          </tr>
-          <tr>
             <th>block id</th>
             <td>{blockDetail.rowData.hash}</td>
-          </tr>
-          <tr>
-            <th>block time</th>
-            <td>
-              {Data.formatTimeToText(
-                  Data.convertTimeStringToMilisecond(
-                      blockDetail.rowData.header_time
-                  )
-              )}
-            </td>
           </tr>
           <tr>
             <th>tx_type</th>

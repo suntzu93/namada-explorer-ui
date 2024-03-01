@@ -81,8 +81,7 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
               align={"left"}
               sortDirection={orderBy === headCell.accessor ? order : false}
             >
-              {headCell.accessor == "voting_power" ||
-              headCell.accessor == "voting_percentage" ? (
+              {headCell.accessor == "status"? (
                 <TableSortLabel
                   direction={orderBy === headCell.accessor ? order : "desc"}
                   onClick={createSortHandler(headCell.accessor)}
@@ -106,8 +105,8 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
     rowCount: PropTypes.number.isRequired,
   };
 
-  const [order, setOrder] = React.useState("desc");
-  const [orderBy, setOrderBy] = React.useState("voting_power");
+  const [order, setOrder] = React.useState("acs");
+  const [orderBy, setOrderBy] = React.useState("status");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(100);
 
@@ -146,16 +145,16 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
             <Link
               target="_blank"
               underline="hover"
-              href={Utils.getDomain() + "?validator=" + row.address}
+              href={Utils.getDomain() + "?validator=" + row.address_hex}
               className={styles.link}
             >
-              {Data.formatString(row.address)}
+              {Data.formatString(row.address_hex)}
             </Link>
             <ShareLink />
             <Tooltip title="Copied">
               <Copy
                 style={{ cursor: "pointer" }}
-                onClick={(e) => copyToClipBoard(row.address)}
+                onClick={(e) => copyToClipBoard(row.address_hex)}
               />
             </Tooltip>
           </TableCell>
@@ -163,16 +162,16 @@ export const ValidatorTable = ({ columns, data, isLoading }) => {
               {row.moniker}
           </TableCell>
           <TableCell align="left">
-            {Data.formatString(row.operator_address)}
+            {Data.formatString(row.address)}
           </TableCell>
           <TableCell align="left">
             <span className={styles.numbers}>
-              {Data.formatWeiDecimalNoSurplus(row.voting_power)}
+              {row.tokens}
             </span>
           </TableCell>
           <TableCell align="left">
             <span className={styles.numbers}>
-              {Data.formatNumberToDecimal(row.voting_percentage)}
+              {row.status}
             </span>
           </TableCell>
         </TableRow>

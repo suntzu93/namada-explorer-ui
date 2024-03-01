@@ -1,5 +1,5 @@
 export const getDomain = () => {
-    return "https://namada-explorer.rpc-node.xyz"
+    return "http://localhost:4001"
 }
 export function isNumeric(str) {
     if (typeof str != "string") return false // we only process strings!

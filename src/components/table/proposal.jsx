@@ -74,7 +74,9 @@ export const ProposalTable = ({ columns, data, isLoading }) => {
               align={"left"}
               sortDirection={orderBy === headCell.accessor ? order : false}
             >
-              {headCell.accessor == "id" || headCell.accessor == "kind" ? (
+              {headCell.accessor == "id" ||
+              headCell.accessor == "result" ||
+              headCell.accessor == "kind" ? (
                 <TableSortLabel
                   direction={orderBy === headCell.accessor ? order : "asc"}
                   onClick={createSortHandler(headCell.accessor)}

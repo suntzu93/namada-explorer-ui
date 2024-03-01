@@ -14,7 +14,7 @@ import Loader from "../../components/loader";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 
-function BlockDetail({ blockDetail, transaction, signatures }) {
+function BlockDetail({ blockDetail}) {
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {
@@ -39,18 +39,18 @@ function BlockDetail({ blockDetail, transaction, signatures }) {
           </TabList>
         </Box>
         <TabPanel value="1" className={styles.operator_detail}>
-          {Overview(blockDetail, transaction)}
+          {Overview(blockDetail)}
         </TabPanel>
         <TabPanel value="2" className={styles.operator_detail}>
-          {Signatures(signatures)}
+          {Signatures(blockDetail)}
         </TabPanel>
       </TabContext>
     </Box>
   );
 }
 
-function Overview(blockDetail, transaction) {
-  console.log(transaction);
+function Overview(blockDetail) {
+  console.log(blockDetail.rowData)
   return (
     <div className={styles.operator_detail_overview}>
       <div style={{ flex: "1 1 0%" }}>
@@ -69,111 +69,25 @@ function Overview(blockDetail, transaction) {
             </tr>
             <tr>
               <th>block height</th>
-              <td>{blockDetail.rowData.header_height}</td>
+              <td>{blockDetail.rowData.header.height}</td>
             </tr>
             <tr>
               <th>block time</th>
               <td>
                 {Data.formatTimeToText(
                   Data.convertTimeStringToMilisecond(
-                    blockDetail.rowData.header_time
+                      blockDetail.rowData.header.time
                   )
                 )}
               </td>
             </tr>
             <tr>
               <th>transactions count</th>
-              <td>{blockDetail.rowData.transactions_count}</td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr>
-              <th colSpan="2" style={{ fontWeight: "bold" }}>
-                Header
-              </th>
-            </tr>
-          </tbody>
-          <tbody className={styles.operator_detail_overview_table_tbody}>
-            <tr>
-              <th>header last block id</th>
-              <td>{blockDetail.rowData.header_last_block_id_hash}</td>
+              <td>{blockDetail.rowData.tx_hashes.length}</td>
             </tr>
             <tr>
-              <th>header total</th>
-              <td>
-                {blockDetail.rowData.header_last_block_id_parts_header_total}
-              </td>
-            </tr>
-            <tr>
-              <th>header last block id</th>
-              <td>
-                {blockDetail.rowData.header_last_block_id_parts_header_hash}
-              </td>
-            </tr>
-            <tr>
-              <th>header last commit</th>
-              <td>{blockDetail.rowData.header_last_commit_hash}</td>
-            </tr>
-            <tr>
-              <th>header data</th>
-              <td>{blockDetail.rowData.header_data_hash}</td>
-            </tr>
-            <tr>
-              <th>header validators</th>
-              <td>{blockDetail.rowData.header_validators_hash}</td>
-            </tr>
-            <tr>
-              <th>header next validators</th>
-              <td>{blockDetail.rowData.header_next_validators_hash}</td>
-            </tr>
-            <tr>
-              <th>header consensus</th>
-              <td>{blockDetail.rowData.header_consensus_hash}</td>
-            </tr>
-            <tr>
-              <th>header app</th>
-              <td>{blockDetail.rowData.header_app_hash}</td>
-            </tr>
-            <tr>
-              <th>header last results</th>
-              <td>{blockDetail.rowData.header_last_results_hash}</td>
-            </tr>
-            <tr>
-              <th>header evidence</th>
-              <td>{blockDetail.rowData.header_evidence_hash}</td>
-            </tr>
-            <tr>
-              <th>header proposer address</th>
-              <td>{blockDetail.rowData.header_proposer_address}</td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr>
-              <th colSpan="2" style={{ fontWeight: "bold" }}>
-                Commit
-              </th>
-            </tr>
-          </tbody>
-          <tbody className={styles.operator_detail_overview_table_tbody}>
-            <tr>
-              <th>commit height</th>
-              <td>{blockDetail.rowData.commit_height}</td>
-            </tr>
-            <tr>
-              <th>commit round</th>
-              <td>{blockDetail.rowData.commit_round}</td>
-            </tr>
-            <tr>
-              <th>commit block id</th>
-              <td>{blockDetail.rowData.commit_block_id_hash}</td>
-            </tr>
-            <tr>
-              <th>commit block id parts header total</th>
-              <td>{blockDetail.rowData.commit_block_id_parts_header_total}</td>
-            </tr>
-            <tr>
-              <th>commit block id parts header</th>
-              <td>{blockDetail.rowData.commit_block_id_parts_header_hash}</td>
+              <th>Proposer</th>
+              <td>{blockDetail.rowData.header.proposer_address}</td>
             </tr>
           </tbody>
         </table>
@@ -182,9 +96,7 @@ function Overview(blockDetail, transaction) {
         <h4>
           <strong>Transactions</strong>
         </h4>
-        {transaction[0]?.hash === undefined
-          ? "Data is not yet indexed, please refresh after a few seconds..."
-          : transaction?.map((trans) => {
+        {blockDetail.rowData.tx_hashes.map((trans) => {
               return (
                 <div className={styles.log_item}>
                   <div className={styles.log_item_lable}>
@@ -192,11 +104,10 @@ function Overview(blockDetail, transaction) {
                       {" tx hash "}
                       <a
                         target="_blank"
-                        href={Utils.getDomain() + "?transaction=" + trans.hash}
+                        href={Utils.getDomain() + "?transaction=" + trans.hash_id}
                       >
-                        {Data.formatHashString(trans.hash)}
+                        {Data.formatHashString(trans.hash_id)}
                       </a>
-                      {"  "} {trans.tx_type}
                     </span>
                   </div>
                 </div>
@@ -207,7 +118,7 @@ function Overview(blockDetail, transaction) {
   );
 }
 
-function Signatures(signatures) {
+function Signatures(blockDetail) {
   return (
     <div>
       <h4>
@@ -219,11 +130,12 @@ function Signatures(signatures) {
             <thead>
               <tr>
                 <th>Validator address</th>
+                <th>Moniker</th>
               </tr>
             </thead>
 
             <tbody>
-              {signatures?.map((address) => {
+              {blockDetail.rowData.signatures?.map((signature) => {
                 return (
                   <tr>
                     <td>
@@ -233,12 +145,15 @@ function Signatures(signatures) {
                         href={
                           Utils.getDomain() +
                           "?validator=" +
-                          address.validator_address
+                            signature.address_hex
                         }
                         className={styles.link}
                       >
-                        {address.validator_address}
+                        {signature.address_hex}
                       </Link>
+                    </td>
+                    <td>
+                        {signature.moniker}
                     </td>
                   </tr>
                 );
@@ -256,8 +171,6 @@ const BlockDetailPage = () => {
     rowData: {},
     isLoading: true,
   });
-  const [transaction, setTransaction] = useState({});
-  const [signatures, setSignatures] = useState([]);
   const [block, setBlock] = useState();
 
   useEffect(() => {
@@ -271,12 +184,7 @@ const BlockDetailPage = () => {
         isLoading: false,
       });
     });
-    Data.getBlockTransactions(block).then((info) => {
-      setTransaction(info);
-    });
-    Data.getBlockSignatures(block).then((info) => {
-      setSignatures(info);
-    });
+
   }, []);
 
   return (
@@ -304,8 +212,6 @@ const BlockDetailPage = () => {
           </div>
           <BlockDetail
             blockDetail={pageData}
-            transaction={transaction}
-            signatures={signatures}
           />
         </div>
       )}
