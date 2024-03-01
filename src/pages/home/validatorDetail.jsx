@@ -85,6 +85,10 @@ const ValidatorDetailPage = () => {
           break;
         }
       }
+      setPageData((prevState) => ({
+        ...prevState,
+        isLoading: false,
+      }));
     });
   }, []);
 
